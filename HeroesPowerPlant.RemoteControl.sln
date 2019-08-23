@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeroesPowerPlant.RemoteControl", "HeroesPowerPlant.RemoteControl\HeroesPowerPlant.RemoteControl.csproj", "{1B9FFE7D-AA29-4C2E-8F04-A1BC537847E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeroesPowerPlant.RemoteControl.Shared", "HeroesPowerPlant.RemoteControl.Shared\HeroesPowerPlant.RemoteControl.Shared.csproj", "{7ED5558F-BA08-4128-92F8-C77B3FE0FDF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeroesPowerPlant.RemoteControl.TestApp", "HeroesPowerPlant.RemoteControl.TestApp\HeroesPowerPlant.RemoteControl.TestApp.csproj", "{747CCB04-419E-42EA-8BA4-A578D368C0F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B9FFE7D-AA29-4C2E-8F04-A1BC537847E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B9FFE7D-AA29-4C2E-8F04-A1BC537847E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B9FFE7D-AA29-4C2E-8F04-A1BC537847E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B9FFE7D-AA29-4C2E-8F04-A1BC537847E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ED5558F-BA08-4128-92F8-C77B3FE0FDF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ED5558F-BA08-4128-92F8-C77B3FE0FDF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ED5558F-BA08-4128-92F8-C77B3FE0FDF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ED5558F-BA08-4128-92F8-C77B3FE0FDF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{747CCB04-419E-42EA-8BA4-A578D368C0F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{747CCB04-419E-42EA-8BA4-A578D368C0F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{747CCB04-419E-42EA-8BA4-A578D368C0F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{747CCB04-419E-42EA-8BA4-A578D368C0F5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE36AA28-DE83-4F97-977A-A4C56CE3A660}
+	EndGlobalSection
+EndGlobal
