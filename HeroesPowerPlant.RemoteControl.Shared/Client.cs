@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HeroesPowerPlant.RemoteControl.Shared.Messages;
 using LiteNetLib;
 using Reloaded.Messaging;
+using Reloaded.Messaging.Interfaces;
 using Reloaded.Messaging.Messages;
 using Reloaded.Messaging.Structs;
 
@@ -19,6 +17,7 @@ namespace HeroesPowerPlant.RemoteControl.Shared
     {
         private NetPeer Server => _simpleHost.NetManager.FirstPeer;
         private SimpleHost<MessageType> _simpleHost;
+        private int _timeout = 1000;
 
         /// <summary>
         /// Creates a client capable to communicating with a running remote control host inside a given process.
@@ -32,6 +31,7 @@ namespace HeroesPowerPlant.RemoteControl.Shared
 
             #if DEBUG
             _simpleHost.NetManager.DisconnectTimeout = Int32.MaxValue;
+            _timeout = Int32.MaxValue;
             #endif
         }
 
@@ -39,8 +39,11 @@ namespace HeroesPowerPlant.RemoteControl.Shared
         /// Loads a collision file given the name of the file in the collisions folder minus the name of the extension.
         /// e.g. "s03"
         /// </summary>
-        public Task<Acknowledgement> LoadCollision(string collisionFileName, int timeout = 1000, CancellationToken token = default)
+        public Task<Acknowledgement> LoadCollision(string collisionFileName, int timeout = -1, CancellationToken token = default)
         {
+            if (timeout == -1)
+                timeout = _timeout;
+
             return SendMessageWithResponseAsync<SwapCollision, Acknowledgement>(new SwapCollision(collisionFileName), timeout, token);
         }
 

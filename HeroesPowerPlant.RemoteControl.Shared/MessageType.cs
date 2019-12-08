@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace HeroesPowerPlant.RemoteControl.Shared
+﻿namespace HeroesPowerPlant.RemoteControl.Shared
 {
     public enum MessageType : byte
     {

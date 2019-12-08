@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using Heroes.SDK.API;
+using Heroes.SDK.Classes.PseudoNativeClasses;
 using Reloaded.Hooks.Definitions;
 using Reloaded.Hooks.Definitions.X86;
 using Reloaded.Hooks.ReloadedII.Interfaces;
@@ -21,38 +23,25 @@ namespace HeroesPowerPlant.RemoteControl
         /// </summary>
         public ConcurrentQueue<Action> Queue = new ConcurrentQueue<Action>();
 
-        /* Function Addresses */
-        private const int DrawHudAddress = 0x0041DFD0;
-        private readonly object _lockObject = new object();
-        private IHook<DrawHUD> _drawHudHook;
+        private readonly object _lock = new object();
         private Server _server;
 
-        /// <summary>
-        /// Hooks the game Draw HUD function
-        /// </summary>
         public MessageQueue(Server server)
         {
             _server = server;
-            _drawHudHook = Program.Hooks.CreateHook<DrawHUD>(DrawHudHookImpl, DrawHudAddress);
-            _drawHudHook.Activate();
+            Event.AfterSleep += AfterFrame;
         }
 
-        private int DrawHudHookImpl()
+        private void AfterFrame()
         {
             _server.PollEvents();
-            lock (_lockObject)
+            lock (_lock)
             {
                 while (Queue.TryDequeue(out Action item))
                 {
                     item();
                 }
-
-                return _drawHudHook.OriginalFunction();
             }
         }
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [Function(CallingConventions.Cdecl)]
-        private delegate int DrawHUD();
     }
 }
