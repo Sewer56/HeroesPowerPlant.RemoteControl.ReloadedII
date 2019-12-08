@@ -15,8 +15,8 @@ namespace HeroesPowerPlant.RemoteControl.Shared
 {
     public class Client
     {
-        private NetPeer Server => _simpleHost.NetManager.FirstPeer;
-        private SimpleHost<MessageType> _simpleHost;
+        public NetPeer Server => SimpleHost.NetManager.FirstPeer;
+        public SimpleHost<MessageType> SimpleHost;
         private int _timeout = 1000;
 
         /// <summary>
@@ -25,12 +25,12 @@ namespace HeroesPowerPlant.RemoteControl.Shared
         /// <exception cref="FileNotFoundException">Server not running inside foreign process.</exception>
         public Client(Process process)
         {
-            _simpleHost = new SimpleHost<MessageType>(false);
-            _simpleHost.NetManager.Start(IPAddress.Loopback, IPAddress.IPv6Loopback, 0);
-            _simpleHost.NetManager.Connect(new IPEndPoint(IPAddress.Loopback, ServerLocator.GetPortOfServer(process.Id)), "");
+            SimpleHost = new SimpleHost<MessageType>(false);
+            SimpleHost.NetManager.Start(IPAddress.Loopback, IPAddress.IPv6Loopback, 0);
+            SimpleHost.NetManager.Connect(new IPEndPoint(IPAddress.Loopback, ServerLocator.GetPortOfServer(process.Id)), "");
 
             #if DEBUG
-            _simpleHost.NetManager.DisconnectTimeout = Int32.MaxValue;
+            SimpleHost.NetManager.DisconnectTimeout = Int32.MaxValue;
             _timeout = Int32.MaxValue;
             #endif
         }
@@ -63,7 +63,7 @@ namespace HeroesPowerPlant.RemoteControl.Shared
                 response = netMessage.Message;
             }
 
-            _simpleHost.MessageHandler.AddOrOverrideHandler<TResponse>(ReceiveMessage);
+            SimpleHost.MessageHandler.AddOrOverrideHandler<TResponse>(ReceiveMessage);
 
             /* Send message. */
             var data = new Message<MessageType, TStruct>(message).Serialize();
