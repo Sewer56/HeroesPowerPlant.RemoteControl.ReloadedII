@@ -2,7 +2,7 @@
   "ModId": "sonicheroes.hpp.remotecontrol",
   "ModName": "HeroesPowerPlant: Remote Control",
   "ModAuthor": "Sewer56",
-  "ModVersion": "1.0.0",
+  "ModVersion": "1.1.0",
   "ModDescription": "A Remote Control Mod/Utility for Heroes Power Plant",
   "ModDll": "HeroesPowerPlant.RemoteControl.dll",
   "ModIcon": "Preview.png",
