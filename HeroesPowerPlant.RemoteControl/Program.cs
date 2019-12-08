@@ -22,7 +22,6 @@ namespace HeroesPowerPlant.RemoteControl
 
             /* Your mod code starts here. */
             var logger = (ILogger) ModLoader.GetLogger();
-            Debugger.Launch();
             SDK.Init(Hooks);
             _server = new Server(logger);
         }
