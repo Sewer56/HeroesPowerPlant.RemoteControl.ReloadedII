@@ -36,6 +36,11 @@ namespace HeroesPowerPlant.RemoteControl.Shared
         }
 
         /// <summary>
+        /// Returns true if client is connected, else false.
+        /// </summary>
+        public bool IsConnected() => SimpleHost.NetManager.PeersCount > 0;
+
+        /// <summary>
         /// Loads a collision file given the name of the file in the collisions folder minus the name of the extension.
         /// e.g. "s03"
         /// </summary>
