@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using csharp_prs;
 using Heroes.SDK;
 using Reloaded.Hooks.ReloadedII.Interfaces;
 using Reloaded.Mod.Interfaces;
@@ -22,7 +23,7 @@ namespace HeroesPowerPlant.RemoteControl
 
             /* Your mod code starts here. */
             var logger = (ILogger) ModLoader.GetLogger();
-            SDK.Init(Hooks);
+            SDK.Init(Hooks, new PrsInstance());
             _server = new Server(logger);
         }
 

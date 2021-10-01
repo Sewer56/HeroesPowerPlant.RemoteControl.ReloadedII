@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputPath>C:\Users\Sewer56\Desktop\Reloaded II\Mods\heroespowerplant.remotecontrol\</OutputPath>
+    <OutputPath>Reloaded II\Mods\heroespowerplant.remotecontrol\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputPath>C:\Users\Sewer56\Desktop\Reloaded II\Mods\heroespowerplant.remotecontrol\</OutputPath>
+    <OutputPath>Reloaded II\Mods\heroespowerplant.remotecontrol\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,8 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reloaded.Mod.Interfaces" Version="1.6.0" />
-    <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.2.0" />
+    <PackageReference Include="csharp-prs" Version="2.1.3" />
+    <PackageReference Include="Reloaded.Mod.Interfaces" Version="1.10.1" />
+    <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.9.0" />
   </ItemGroup>
 
   <ItemGroup>
