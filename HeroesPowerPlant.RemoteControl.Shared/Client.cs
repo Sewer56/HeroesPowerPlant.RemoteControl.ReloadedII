@@ -2,21 +2,25 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using HeroesPowerPlant.RemoteControl.Shared.Messages;
 using LiteNetLib;
 using Reloaded.Messaging;
+using Reloaded.Messaging.Host.LiteNetLib;
 using Reloaded.Messaging.Interfaces;
+using Reloaded.Messaging.Interfaces.Utilities;
 using Reloaded.Messaging.Messages;
-using Reloaded.Messaging.Structs;
+using Reloaded.Messaging.Serializer.MessagePack;
+using Reloaded.Messaging.Utilities;
 
 namespace HeroesPowerPlant.RemoteControl.Shared
 {
     public class Client
     {
-        public NetPeer Server => SimpleHost.NetManager.FirstPeer;
-        public SimpleHost<MessageType> SimpleHost;
+        public NetPeer Server => SimpleHost.FirstPeer;
+        public LiteNetLibHost<MessageDispatcher<LiteNetLibState>> SimpleHost;
         private int _timeout = 1000;
 
         /// <summary>
@@ -25,12 +29,13 @@ namespace HeroesPowerPlant.RemoteControl.Shared
         /// <exception cref="FileNotFoundException">Server not running inside foreign process.</exception>
         public Client(Process process)
         {
-            SimpleHost = new SimpleHost<MessageType>(false);
-            SimpleHost.NetManager.Start(IPAddress.Loopback, IPAddress.IPv6Loopback, 0);
-            SimpleHost.NetManager.Connect(new IPEndPoint(IPAddress.Loopback, ServerLocator.GetPortOfServer(process.Id)), "");
+            SimpleHost = new LiteNetLibHost<MessageDispatcher<LiteNetLibState>>(false, new MessageDispatcher<LiteNetLibState>(), "");
+            SimpleHost.Manager.UnsyncedEvents = true;
+            SimpleHost.Manager.Start(IPAddress.Loopback, IPAddress.IPv6Loopback, 0);
+            SimpleHost.Manager.Connect(new IPEndPoint(IPAddress.Loopback, ServerLocator.GetPortOfServer(process.Id)), "");
 
             #if DEBUG
-            SimpleHost.NetManager.DisconnectTimeout = Int32.MaxValue;
+            SimpleHost.Manager.DisconnectTimeout = Int32.MaxValue;
             _timeout = Int32.MaxValue;
             #endif
         }
@@ -38,7 +43,7 @@ namespace HeroesPowerPlant.RemoteControl.Shared
         /// <summary>
         /// Returns true if client is connected, else false.
         /// </summary>
-        public bool IsConnected() => SimpleHost.NetManager.ConnectedPeersCount > 0;
+        public bool IsConnected() => SimpleHost.Manager.ConnectedPeersCount > 0;
 
         /// <summary>
         /// Loads a collision file given the name of the file in the collisions folder minus the name of the extension.
@@ -54,25 +59,20 @@ namespace HeroesPowerPlant.RemoteControl.Shared
 
         /* Send synchronously with timeout */
         private async Task<TResponse> SendMessageWithResponseAsync<TStruct, TResponse>(TStruct message, int timeout = 1000, CancellationToken token = default)
-            where TStruct : IMessage<MessageType>, new()
-            where TResponse : struct, IMessage<MessageType>
+            where TStruct : struct, IMessage<TStruct, MessagePackSerializer<TStruct>, NullCompressor>
+            where TResponse : struct, IMessage<TResponse, MessagePackSerializer<TResponse>, NullCompressor>
         {
             /* Start timeout. */
             var watch = new Stopwatch();
             watch.Start();
 
             /* Setup response. */
-            TResponse? response = null;
-            void ReceiveMessage(ref NetMessage<TResponse> netMessage)
-            {
-                response = netMessage.Message;
-            }
-
-            SimpleHost.MessageHandler.AddOrOverrideHandler<TResponse>(ReceiveMessage);
+            var handler = new ResponseHandler<TResponse>();
+            default(TResponse).AddToDispatcher(handler, ref SimpleHost.Dispatcher);
 
             /* Send message. */
-            var data = new Message<MessageType, TStruct>(message).Serialize();
-            Server.Send(data, DeliveryMethod.ReliableOrdered);
+            using (var data = message.Serialize(ref message))
+                Server.Send(data.Span, DeliveryMethod.ReliableOrdered);
 
             /* Wait loop. */
             while (watch.ElapsedMilliseconds < timeout)
@@ -81,6 +81,7 @@ namespace HeroesPowerPlant.RemoteControl.Shared
                     throw new Exception("Task was cancelled.");
 
                 // Return response if available.
+                var response = handler.Response;
                 if (response != null)
                     return response.Value;
 
@@ -88,6 +89,14 @@ namespace HeroesPowerPlant.RemoteControl.Shared
             }
 
             throw new Exception("Timeout to receive response has expired.");
+        }
+
+        private class ResponseHandler<TResponse> : IMsgRefAction<TResponse, LiteNetLibState> where TResponse : struct
+        {
+            public volatile StrongBox<TResponse> Box;
+            public TResponse? Response => Box?.Value;
+
+            public void OnMessageReceive(ref TResponse received, ref LiteNetLibState state) => Box = new StrongBox<TResponse>(received);
         }
     }
 }

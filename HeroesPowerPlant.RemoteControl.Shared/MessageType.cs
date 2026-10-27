@@ -1,10 +1,10 @@
 ﻿namespace HeroesPowerPlant.RemoteControl.Shared
 {
-    public enum MessageType : byte
+    public enum MessageType : sbyte
     {
         SwapCollision,
 
-        // Exceptions (Responses) | 200 - 255 
-        Acknowledgement = 200
+        // Exceptions (Responses) | 100 - 127
+        Acknowledgement = 100
     }
 }
